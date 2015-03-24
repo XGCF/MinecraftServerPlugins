@@ -1,0 +1,7 @@
+name: Umfragen
+version: 1.0
+description: Plugin zur Erstellung und Ausfuehrung von Umfragen
+author: XGCF
+main: me.xgcf.umfragen.Umfragen
+commands:
+  
