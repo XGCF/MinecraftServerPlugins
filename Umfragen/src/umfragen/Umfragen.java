@@ -6,6 +6,8 @@
 
 package umfragen;
 
+import java.io.File;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -13,10 +15,24 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author vgraber
  */
 public class Umfragen extends JavaPlugin {
-
+    
+    private YamlConfiguration umfragen;
+    
     @Override
     public void onEnable() {
+        try{
+        File file = new File(getDataFolder(), "umfragen.yml");
+        if(!file.exists()){
+            file.createNewFile();
+            YamlConfiguration.loadConfiguration(file).set("umfragen", "");
+        }
+        umfragen = YamlConfiguration.loadConfiguration(file);
+        
+        
         System.out.println("[Umfragen] Aktiviert!");
+        }catch(Exception e){
+            System.out.println("[Umfragen] Konnte nicht aktiviert werden!");
+        }
         
     }
 

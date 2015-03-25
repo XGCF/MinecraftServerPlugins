@@ -6,4 +6,4 @@ main: me.xgcf.umfragen.Umfragen
 commands:
   u:
     description: Command für alle Befehle für Umfragen
-    usage: /u ...
+    usage: /u <command> <args>
