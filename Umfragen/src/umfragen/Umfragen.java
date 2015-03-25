@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
 
 /**
  *
@@ -118,7 +117,8 @@ public class Umfragen extends JavaPlugin {
                         case "detail":
 
                             break;
-                        
+                        default:
+                            return false;
                     }
                     break;
                 default:
