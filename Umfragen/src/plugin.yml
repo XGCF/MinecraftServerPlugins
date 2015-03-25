@@ -4,4 +4,6 @@ description: Plugin zur Erstellung und Ausfuehrung von Umfragen
 author: XGCF
 main: me.xgcf.umfragen.Umfragen
 commands:
-  
+  u:
+    description: Command für alle Befehle für Umfragen
+    usage: /u ...
