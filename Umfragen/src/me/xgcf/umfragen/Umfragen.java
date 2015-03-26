@@ -8,10 +8,16 @@ package me.xgcf.umfragen;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.paint.Color;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -59,69 +65,50 @@ public class Umfragen extends JavaPlugin {
                 case 1:
                     switch(args[0]){
                         case "types":
-                            auflistenTypen(sender);
-                            break;
+                            return auflistenTypen(sender);
                         case "list":
-                            auflistenUmfragen(sender);
-                            break;
+                            return auflistenUmfragen(sender);
                         case "reload":
-                            neuladen(sender);
-                            break;
+                            return neuladen(sender);
                         default:
                             return false;
                     }
-                    break;
                 case 2:
                     switch(args[0]){
                         case "create":
-                            erstellen(sender,args[1]);
-                            break;
+                            return erstellen(sender,args[1]);
                         case "open":
-                            oeffnen(sender,args[1]);
-                            break;
+                            return oeffnen(sender,args[1]);
                         case "close":
-                            schliessen(sender,args[1]);
-                            break;
+                            return schliessen(sender,args[1]);
                         case "reopen":
-                            wiederOeffnen(sender,args[1]);
-                            break;
+                            return wiederOeffnen(sender,args[1]);
                         case "remove":
-                            entfernen(sender,args[1]);
-                            break;
+                            return entfernen(sender,args[1]);
                         case "detail":
-                            detailsAuflisten(sender,args[1]);
-                            break;
+                            return detailsAuflisten(sender,args[1]);
                         default:
                             return false;
                     }
-                    break;
                 case 3:
                     switch(args[0]){
                         case "setfrage":
-                            frageSetzen(sender,args[1],args[2]);
-                            break;
+                            return frageSetzen(sender,args[1],args[2]);
                         case "settyp":
-                            typSetzen(sender,args[1],args[2]);
-                            break;
+                            return typSetzen(sender,args[1],args[2]);
                         case "addvote":
-                            hinzufuegenVote(sender,args[1],args[2]);
-                            break;
+                            return hinzufuegenVote(sender,args[1],args[2]);
                         case "removevote":
-                            entfernenVotes(sender,args[1],args[2]);
-                            break;
+                            return entfernenVotes(sender,args[1],args[2]);
                         case "setmaxvotes":
-                            maxVotesSetzen(sender,args[1],args[2]);
-                            break;
+                            return maxVotesSetzen(sender,args[1],args[2]);
                         case "setminvalue":
-                            minValueSetzen(sender,args[1],args[2]);
-                            break;
+                            return minValueSetzen(sender,args[1],args[2]);
                         case "setmaxvalue":
-                            maxValueSetzen(sender,args[1],args[2]);
-                            break;
+                            return maxValueSetzen(sender,args[1],args[2]);
                         default:
                             return false;
                     }
-                    break;
                 default:
                     return false;
             }
@@ -130,67 +117,111 @@ public class Umfragen extends JavaPlugin {
         return false;
     }
 
-    private void auflistenTypen(CommandSender sender) {
+    private boolean auflistenTypen(CommandSender sender) {
+        if(sender instanceof ConsoleCommandSender){
+            sender.sendMessage("Umfragentypen:");
+            sender.sendMessage("- text");
+            sender.sendMessage("- multitext");
+            sender.sendMessage("- number");
+            return true;
+        }
+        if(sender instanceof Player){
+            Player p = (Player)sender;
+            if(p.hasPermission("umfragen.types")){
+                p.sendMessage(Color.PURPLE+"Umfragentypen:");
+                p.sendMessage(Color.PURPLE+"- text");
+                p.sendMessage(Color.PURPLE+"- multitext");
+                p.sendMessage(Color.PURPLE+"- number");
+                return true;
+            }else{
+                p.sendMessage(ChatColor.RED+"Keine Permission!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean auflistenUmfragen(CommandSender sender) {
+        if(sender instanceof ConsoleCommandSender){
+            ArrayList<String> alUmfragen = (ArrayList<String>)this.getConfig().getList("umfragen");
+            sender.sendMessage("Umfragen:");
+            //TODO Aktive und inaktive Umfragen aufteilen
+            for (String umfrage : alUmfragen) {
+                sender.sendMessage("- "+umfrage);
+            }
+            return true;
+        }
+        if(sender instanceof Player){
+            Player p = (Player)sender;
+            if(p.hasPermission("umfragen.list")){
+                ArrayList<String> alUmfragen = (ArrayList<String>)this.getConfig().getList("umfragen");
+                sender.sendMessage("Umfragen:");
+                //TODO Aktive und inaktive Umfragen aufteilen (mit Permission)
+                for (String umfrage : alUmfragen) {
+                    sender.sendMessage("- "+umfrage);
+                }
+                return true;
+            }else{
+                p.sendMessage(ChatColor.RED+"Keine Permission!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean neuladen(CommandSender sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void auflistenUmfragen(CommandSender sender) {
+    private boolean erstellen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void neuladen(CommandSender sender) {
+    private boolean oeffnen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void erstellen(CommandSender sender, String name) {
+    private boolean schliessen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void oeffnen(CommandSender sender, String name) {
+    private boolean wiederOeffnen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void schliessen(CommandSender sender, String name) {
+    private boolean entfernen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void wiederOeffnen(CommandSender sender, String name) {
+    private boolean detailsAuflisten(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void entfernen(CommandSender sender, String name) {
+    private boolean frageSetzen(CommandSender sender, String name, String frage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void detailsAuflisten(CommandSender sender, String name) {
+    private boolean typSetzen(CommandSender sender, String name, String typ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void frageSetzen(CommandSender sender, String name, String frage) {
+    private boolean hinzufuegenVote(CommandSender sender, String name, String text) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void typSetzen(CommandSender sender, String name, String typ) {
+    private boolean entfernenVotes(CommandSender sender, String name, String text) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void hinzufuegenVote(CommandSender sender, String name, String text) {
+    private boolean maxVotesSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void entfernenVotes(CommandSender sender, String name, String text) {
+    private boolean minValueSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void maxVotesSetzen(CommandSender sender, String name, String anz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void minValueSetzen(CommandSender sender, String name, String anz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void maxValueSetzen(CommandSender sender, String name, String anz) {
+    private boolean maxValueSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
