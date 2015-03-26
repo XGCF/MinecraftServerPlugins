@@ -7,6 +7,7 @@
 package me.xgcf.umfragen;
 
 import java.io.File;
+import java.io.IOException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,7 +36,7 @@ public class Umfragen extends JavaPlugin {
             umfragen = YamlConfiguration.loadConfiguration(file);
 
             System.out.println("[Umfragen] Aktiviert!");
-        }catch(Exception e){
+        }catch(IOException ie){
             System.out.println("[Umfragen] Konnte nicht aktiviert werden!");
         }
         
@@ -58,13 +59,13 @@ public class Umfragen extends JavaPlugin {
                 case 1:
                     switch(args[0]){
                         case "types":
-                            auflistenTypen();
+                            auflistenTypen(sender);
                             break;
                         case "list":
-                            auflistenUmfragen();
+                            auflistenUmfragen(sender);
                             break;
                         case "reload":
-                            neuladen();
+                            neuladen(sender);
                             break;
                         default:
                             return false;
@@ -73,22 +74,22 @@ public class Umfragen extends JavaPlugin {
                 case 2:
                     switch(args[0]){
                         case "create":
-                            erstellen();
+                            erstellen(sender,args[1]);
                             break;
                         case "open":
-                            oeffnen();
+                            oeffnen(sender,args[1]);
                             break;
                         case "close":
-                            schliessen();
+                            schliessen(sender,args[1]);
                             break;
                         case "reopen":
-                            wiederOeffnen();
+                            wiederOeffnen(sender,args[1]);
                             break;
                         case "remove":
-                            entfernen();
+                            entfernen(sender,args[1]);
                             break;
                         case "detail":
-                            detailsAuflisten();
+                            detailsAuflisten(sender,args[1]);
                             break;
                         default:
                             return false;
@@ -97,25 +98,25 @@ public class Umfragen extends JavaPlugin {
                 case 3:
                     switch(args[0]){
                         case "setfrage":
-                            frageSetzen();
+                            frageSetzen(sender,args[1],args[2]);
                             break;
                         case "settyp":
-                            typSetzen();
+                            typSetzen(sender,args[1],args[2]);
                             break;
                         case "addvote":
-                            hinzufuegenVote();
+                            hinzufuegenVote(sender,args[1],args[2]);
                             break;
                         case "removevote":
-                            entfernenVotes();
+                            entfernenVotes(sender,args[1],args[2]);
                             break;
                         case "setmaxvotes":
-                            maxVotesSetzen();
+                            maxVotesSetzen(sender,args[1],args[2]);
                             break;
                         case "setminvalue":
-                            minValueSetzen();
+                            minValueSetzen(sender,args[1],args[2]);
                             break;
                         case "setmaxvalue":
-                            maxValueSetzen();
+                            maxValueSetzen(sender,args[1],args[2]);
                             break;
                         default:
                             return false;
@@ -129,71 +130,67 @@ public class Umfragen extends JavaPlugin {
         return false;
     }
 
-    private void auflistenTypen() {
+    private void auflistenTypen(CommandSender sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void auflistenUmfragen() {
+    private void auflistenUmfragen(CommandSender sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void neuladen() {
+    private void neuladen(CommandSender sender) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void erstellen() {
+    private void erstellen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void oeffnen() {
+    private void oeffnen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void schliessen() {
+    private void schliessen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void wiederOeffnen() {
+    private void wiederOeffnen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void entfernen() {
+    private void entfernen(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void detailsAuflisten() {
+    private void detailsAuflisten(CommandSender sender, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void frageSetzen() {
+    private void frageSetzen(CommandSender sender, String name, String frage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void typSetzen() {
+    private void typSetzen(CommandSender sender, String name, String typ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void hinzufuegenVote() {
+    private void hinzufuegenVote(CommandSender sender, String name, String text) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void entfernenVotes() {
+    private void entfernenVotes(CommandSender sender, String name, String text) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void maxVotesSetzen() {
+    private void maxVotesSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void minValueSetzen() {
+    private void minValueSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void maxValueSetzen() {
+    private void maxValueSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
-    
 }
