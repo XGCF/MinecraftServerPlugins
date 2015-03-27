@@ -9,7 +9,6 @@ package me.xgcf.umfragen;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -143,22 +141,37 @@ public class Umfragen extends JavaPlugin {
 
     private boolean auflistenUmfragen(CommandSender sender) {
         if(sender instanceof ConsoleCommandSender){
-            ArrayList<String> alUmfragen = (ArrayList<String>)this.getConfig().getList("umfragen");
-            sender.sendMessage("Umfragen:");
-            //TODO Aktive und inaktive Umfragen aufteilen
+            ArrayList<String> alUmfragen = (ArrayList<String>)umfragen.getList("umfragen");
+            sender.sendMessage("Aktive Umfragen:");
+            for (String umfrage : alUmfragen) {
+                if(umfragen.getBoolean("umfragen."+umfrage)){
+                    sender.sendMessage("- "+umfrage);
+                    alUmfragen.remove(umfrage);
+                }
+            }
+            sender.sendMessage("Inaktive Umfragen:");
             for (String umfrage : alUmfragen) {
                 sender.sendMessage("- "+umfrage);
             }
+            
             return true;
         }
         if(sender instanceof Player){
             Player p = (Player)sender;
             if(p.hasPermission("umfragen.list")){
-                ArrayList<String> alUmfragen = (ArrayList<String>)this.getConfig().getList("umfragen");
-                sender.sendMessage("Umfragen:");
-                //TODO Aktive und inaktive Umfragen aufteilen (mit Permission)
+                ArrayList<String> alUmfragen = (ArrayList<String>)umfragen.getList("umfragen");
+                sender.sendMessage("Aktive Umfragen:");
                 for (String umfrage : alUmfragen) {
-                    sender.sendMessage("- "+umfrage);
+                    if(umfragen.getBoolean("umfragen."+umfrage)){
+                        sender.sendMessage("- "+umfrage);
+                        alUmfragen.remove(umfrage);
+                    }
+                }
+                if(p.hasPermission("umfragen.list.closed")){
+                    sender.sendMessage("Inaktive Umfragen:");
+                    for (String umfrage : alUmfragen) {
+                        sender.sendMessage("- "+umfrage);
+                    }
                 }
                 return true;
             }else{
@@ -170,11 +183,38 @@ public class Umfragen extends JavaPlugin {
     }
 
     private boolean neuladen(CommandSender sender) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(sender instanceof ConsoleCommandSender){
+            File file = new File(getDataFolder(), "umfragen.yml");
+            umfragen = YamlConfiguration.loadConfiguration(file);
+            sender.sendMessage("[Umfragen] Reloaded!");
+            return true;
+        }
+        if(sender instanceof Player){
+            Player p = (Player) sender;
+            if(p.hasPermission("umfragen.reload")){
+                File file = new File(getDataFolder(), "umfragen.yml");
+                umfragen = YamlConfiguration.loadConfiguration(file);
+                sender.sendMessage(Color.PURPLE+"[Umfragen] Reloaded!");
+                return true;
+            }else{
+                p.sendMessage(ChatColor.RED+"Keine Permission!");
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean erstellen(CommandSender sender, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(sender instanceof ConsoleCommandSender){
+            umfragen.set("umfragen."+name+".owner", "!CONSOLE!");
+        }
+        if(sender instanceof Player){
+            Player p = (Player)sender;
+            if(p.hasPermission("umfragen.create")){
+                
+            }
+        }
+        return false;
     }
 
     private boolean oeffnen(CommandSender sender, String name) {
