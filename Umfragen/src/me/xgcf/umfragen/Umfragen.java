@@ -206,19 +206,45 @@ public class Umfragen extends JavaPlugin {
 
     private boolean erstellen(CommandSender sender, String name) {
         if(sender instanceof ConsoleCommandSender){
+            if(umfragen.getList("umfragen").contains(name)){
+                sender.sendMessage("Die Umfrage "+name+" existiert bereits!");
+                return true;
+            }
             umfragen.set("umfragen."+name+".owner", "!CONSOLE!");
+            saveUmfragen();
+            sender.sendMessage("Umfrage "+name+" erstellt!");
+            return true;
         }
         if(sender instanceof Player){
             Player p = (Player)sender;
             if(p.hasPermission("umfragen.create")){
-                
+                if(umfragen.getList("umfragen").contains(name)){
+                    sender.sendMessage(Color.PURPLE+"Die Umfrage "+Color.BLUEVIOLET+name+Color.PURPLE+" existiert bereits!");
+                    return true;
+                }
+                umfragen.set("umfragen."+name+".owner", "!CONSOLE!");
+                saveUmfragen();
+                sender.sendMessage(Color.PURPLE+"Umfrage "+Color.BLUEVIOLET+name+Color.PURPLE+" erstellt!");
+                return true;
             }
         }
         return false;
     }
 
     private boolean oeffnen(CommandSender sender, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(sender instanceof ConsoleCommandSender){
+            if(!umfragen.getList("umfragen").contains(name)){
+                sender.sendMessage("Umfrage "+name+" ist nicht vorhanden!");
+                return true;
+            }
+            umfragen.set("umfragen."+name+".aktiv", true);
+            saveUmfragen();
+            return true;
+        }
+        if(sender instanceof Player){
+            Player p = (Player)sender;
+        }
+        return false;
     }
 
     private boolean schliessen(CommandSender sender, String name) {
@@ -263,5 +289,13 @@ public class Umfragen extends JavaPlugin {
 
     private boolean maxValueSetzen(CommandSender sender, String name, String anz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void saveUmfragen() {
+        try{
+            umfragen.save(new File(getDataFolder(),"umfragen.yml"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
