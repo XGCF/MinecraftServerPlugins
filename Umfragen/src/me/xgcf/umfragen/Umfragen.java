@@ -246,13 +246,13 @@ public class Umfragen extends JavaPlugin {
             }
             switch(umfragen.getString("umfragen."+name+".typ")){
                 case "text":
-                    if(umfragen.getInt("umfragen."+name+".maxvotes") == 0){
+                    if(umfragen.getInt("umfragen."+name+".maxvotes",-1) == -1){
                         sender.sendMessage("Zum Typ 'text' fehlt die maximale Anzahl an Votes!");
                         return true;
                     }
                     break;
                 case "multitext":
-                    if(umfragen.getInt("umfragen."+name+".maxvotes") == 0){
+                    if(umfragen.getInt("umfragen."+name+".maxvotes",-1) == -1){
                         sender.sendMessage("Zum Typ 'multitext' fehlt die maximale Anzahl an Votes!");
                         return true;
                     }
@@ -262,18 +262,34 @@ public class Umfragen extends JavaPlugin {
                     }
                     break;
                 case "number":
-                    
+                    if(umfragen.getInt("umfragen."+name+".minvalue",-1) == -1){
+                        sender.sendMessage("Zum Typ 'number' fehlt der Mindestwert!");
+                        return true;
+                    }
+                    if(umfragen.getInt("umfragen."+name+".maxvalue",-1) == -1){
+                        sender.sendMessage("Zum Typ 'number' fehlt der Maximalwert!");
+                        return true;
+                    }
+                    if(umfragen.getInt("umfragen."+name+".maxvalue") <= umfragen.getInt("umfragen."+name+".minvalue")){
+                        sender.sendMessage("Der Maximalwert muss über dem Minimalwert liegen!");
+                        return true;
+                    }
                     break;
                 default:
-                    
+                    sender.sendMessage("Der Typ '"+umfragen.getString("umfragen."+name+".typ")+"' ist nicht bekannt!");
+                    return true;
             }
             umfragen.set("umfragen."+name+".aktiv", true);
             saveUmfragen();
-            sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" aktiviert!");
+            sender.sendMessage("Umfrage "+name+"aktiviert!");
+            //sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" aktiviert!");
             return true;
         }
         if(sender instanceof Player){
             Player p = (Player)sender;
+            if(!(umfragen.getString("umfragen."+name+".owner").equals(p.getName()) && p.hasPermission("umfragen.open"))){
+                
+            }
         }
         return false;
     }
