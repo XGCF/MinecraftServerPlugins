@@ -225,6 +225,9 @@ public class Umfragen extends JavaPlugin {
                 saveUmfragen();
                 sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" erstellt!");
                 return true;
+            }else{
+                p.sendMessage(ChatColor.RED+"Keine Permission!");
+                return true;
             }
         }
         return false;
@@ -257,7 +260,7 @@ public class Umfragen extends JavaPlugin {
                         return true;
                     }
                     if(umfragen.getList("umfragen."+name+"votes").size() < 2){
-                        sender.sendMessage("Zum Typ 'multitext' müssen mindestens zwei votes angegeben werden!");
+                        sender.sendMessage("Zum Typ 'multitext' müssen mindestens zwei Votes angegeben werden!");
                         return true;
                     }
                     break;
@@ -282,14 +285,65 @@ public class Umfragen extends JavaPlugin {
             umfragen.set("umfragen."+name+".aktiv", true);
             saveUmfragen();
             sender.sendMessage("Umfrage "+name+"aktiviert!");
-            //sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" aktiviert!");
             return true;
         }
         if(sender instanceof Player){
             Player p = (Player)sender;
-            if(!(umfragen.getString("umfragen."+name+".owner").equals(p.getName()) && p.hasPermission("umfragen.open"))){
-                
+            if(!(umfragen.getString("umfragen."+name+"owner").equals(p.getName()) && p.hasPermission("umfragen.open")) || !p.hasPermission("umfragen.open.others") ){
+                p.sendMessage(ChatColor.RED+"Keine Permission!");
+                return true;
             }
+            if(!umfragen.getList("umfragen").contains(name)){
+                sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" ist nicht vorhanden!");
+                return true;
+            }
+            if(umfragen.getString("umfragen."+name+".frage") == null){
+                sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" hat noch keine "+ChatColor.BLUE+"Frage"+ChatColor.LIGHT_PURPLE+"!");
+                return true;
+            }
+            if(umfragen.getString("umfragen."+name+".typ") == null){
+                sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" hat noch keinen "+ChatColor.BLUE+"Typ"+ChatColor.LIGHT_PURPLE+"!");
+                return true;
+            }
+            switch(umfragen.getString("umfragen."+name+".typ")){
+                case "text":
+                    if(umfragen.getInt("umfragen."+name+".maxvotes",-1) == -1){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Zum Typ "+ChatColor.BLUE+"'text' "+ChatColor.LIGHT_PURPLE+"fehlt die "+ChatColor.BLUE+"maximale Anzahl "+ChatColor.LIGHT_PURPLE+"an "+ChatColor.BLUE+"Votes"+ChatColor.LIGHT_PURPLE+"!");
+                        return true;
+                    }
+                    break;
+                case "multitext":
+                    if(umfragen.getInt("umfragen."+name+".maxvotes",-1) == -1){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Zum Typ "+ChatColor.BLUE+"'multitext' "+ChatColor.LIGHT_PURPLE+"fehlt die "+ChatColor.BLUE+"maximale Anzahl "+ChatColor.LIGHT_PURPLE+"an "+ChatColor.BLUE+"Votes"+ChatColor.LIGHT_PURPLE+"!");
+                        return true;
+                    }
+                    if(umfragen.getList("umfragen."+name+"votes").size() < 2){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Zum Typ "+ChatColor.BLUE+"'multitext' "+ChatColor.LIGHT_PURPLE+"müssen mindestens "+ChatColor.BLUE+"zwei Votes "+ChatColor.LIGHT_PURPLE+"angegeben werden!");
+                        return true;
+                    }
+                    break;
+                case "number":
+                    if(umfragen.getInt("umfragen."+name+".minvalue",-1) == -1){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Zum Typ "+ChatColor.BLUE+"'number' "+ChatColor.LIGHT_PURPLE+"fehlt der "+ChatColor.BLUE+"Mindestwert"+ChatColor.LIGHT_PURPLE+"!");
+                        return true;
+                    }
+                    if(umfragen.getInt("umfragen."+name+".maxvalue",-1) == -1){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Zum Typ "+ChatColor.BLUE+"'number' "+ChatColor.LIGHT_PURPLE+"fehlt der "+ChatColor.BLUE+"Maximalwert"+ChatColor.LIGHT_PURPLE+"!");
+                        return true;
+                    }
+                    if(umfragen.getInt("umfragen."+name+".maxvalue") <= umfragen.getInt("umfragen."+name+".minvalue")){
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE+"Der "+ChatColor.BLUE+"Maximalwert "+ChatColor.LIGHT_PURPLE+"muss über dem "+ChatColor.BLUE+"Minimalwert "+ChatColor.LIGHT_PURPLE+"liegen!");
+                        return true;
+                    }
+                    break;
+                default:
+                    sender.sendMessage(ChatColor.LIGHT_PURPLE+"Der Typ '"+ChatColor.BLUE+umfragen.getString("umfragen."+name+".typ")+ChatColor.LIGHT_PURPLE+"' ist nicht bekannt!");
+                    return true;
+            }
+            umfragen.set("umfragen."+name+".aktiv", true);
+            saveUmfragen();
+            sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" aktiviert!");
+            return true;
         }
         return false;
     }
