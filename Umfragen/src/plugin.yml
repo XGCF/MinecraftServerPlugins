@@ -7,4 +7,4 @@ commands:
   umfragen:
     description: Command für alle Befehle für Umfragen
     usage: /umfragen <command> <args>
-    aliases: u
+    aliases: uf, u

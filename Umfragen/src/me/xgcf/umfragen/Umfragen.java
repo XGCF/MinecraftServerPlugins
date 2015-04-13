@@ -9,7 +9,6 @@ package me.xgcf.umfragen;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javafx.scene.paint.Color;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -126,10 +125,10 @@ public class Umfragen extends JavaPlugin {
         if(sender instanceof Player){
             Player p = (Player)sender;
             if(p.hasPermission("umfragen.types")){
-                p.sendMessage(Color.PURPLE+"Umfragentypen:");
-                p.sendMessage(Color.PURPLE+"- text");
-                p.sendMessage(Color.PURPLE+"- multitext");
-                p.sendMessage(Color.PURPLE+"- number");
+                p.sendMessage(ChatColor.LIGHT_PURPLE+"Umfragentypen:");
+                p.sendMessage(ChatColor.LIGHT_PURPLE+"- text");
+                p.sendMessage(ChatColor.LIGHT_PURPLE+"- multitext");
+                p.sendMessage(ChatColor.LIGHT_PURPLE+"- number");
                 return true;
             }else{
                 p.sendMessage(ChatColor.RED+"Keine Permission!");
@@ -194,7 +193,7 @@ public class Umfragen extends JavaPlugin {
             if(p.hasPermission("umfragen.reload")){
                 File file = new File(getDataFolder(), "umfragen.yml");
                 umfragen = YamlConfiguration.loadConfiguration(file);
-                sender.sendMessage(Color.PURPLE+"[Umfragen] Reloaded!");
+                sender.sendMessage(ChatColor.LIGHT_PURPLE+"[Umfragen] Reloaded!");
                 return true;
             }else{
                 p.sendMessage(ChatColor.RED+"Keine Permission!");
@@ -219,12 +218,12 @@ public class Umfragen extends JavaPlugin {
             Player p = (Player)sender;
             if(p.hasPermission("umfragen.create")){
                 if(umfragen.getList("umfragen").contains(name)){
-                    sender.sendMessage(Color.PURPLE+"Die Umfrage "+Color.BLUEVIOLET+name+Color.PURPLE+" existiert bereits!");
+                    sender.sendMessage(ChatColor.LIGHT_PURPLE+"Die Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" existiert bereits!");
                     return true;
                 }
-                umfragen.set("umfragen."+name+".owner", "!CONSOLE!");
+                umfragen.set("umfragen."+name+".owner", p.getName());
                 saveUmfragen();
-                sender.sendMessage(Color.PURPLE+"Umfrage "+Color.BLUEVIOLET+name+Color.PURPLE+" erstellt!");
+                sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" erstellt!");
                 return true;
             }
         }
@@ -237,8 +236,40 @@ public class Umfragen extends JavaPlugin {
                 sender.sendMessage("Umfrage "+name+" ist nicht vorhanden!");
                 return true;
             }
+            if(umfragen.getString("umfragen."+name+".frage") == null){
+                sender.sendMessage("Umfrage "+name+" hat noch keine Frage!");
+                return true;
+            }
+            if(umfragen.getString("umfragen."+name+".typ") == null){
+                sender.sendMessage("Umfrage "+name+" hat noch keinen Typ!");
+                return true;
+            }
+            switch(umfragen.getString("umfragen."+name+".typ")){
+                case "text":
+                    if(umfragen.getInt("umfragen."+name+".maxvotes") == 0){
+                        sender.sendMessage("Zum Typ 'text' fehlt die maximale Anzahl an Votes!");
+                        return true;
+                    }
+                    break;
+                case "multitext":
+                    if(umfragen.getInt("umfragen."+name+".maxvotes") == 0){
+                        sender.sendMessage("Zum Typ 'multitext' fehlt die maximale Anzahl an Votes!");
+                        return true;
+                    }
+                    if(umfragen.getList("umfragen."+name+"votes").size() < 2){
+                        sender.sendMessage("Zum Typ 'multitext' müssen mindestens zwei votes angegeben werden!");
+                        return true;
+                    }
+                    break;
+                case "number":
+                    
+                    break;
+                default:
+                    
+            }
             umfragen.set("umfragen."+name+".aktiv", true);
             saveUmfragen();
+            sender.sendMessage(ChatColor.LIGHT_PURPLE+"Umfrage "+ChatColor.BLUE+name+ChatColor.LIGHT_PURPLE+" aktiviert!");
             return true;
         }
         if(sender instanceof Player){
