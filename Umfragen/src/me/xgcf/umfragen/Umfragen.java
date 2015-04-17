@@ -349,7 +349,7 @@ public class Umfragen extends JavaPlugin {
     }
 
     private boolean schliessen(CommandSender sender, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     private boolean wiederOeffnen(CommandSender sender, String name) {
