@@ -349,7 +349,13 @@ public class Umfragen extends JavaPlugin {
     }
 
     private boolean schliessen(CommandSender sender, String name) {
-        
+        if(sender instanceof ConsoleCommandSender){
+            
+        }
+        if(sender instanceof Player){
+            
+        }
+        return false;
     }
 
     private boolean wiederOeffnen(CommandSender sender, String name) {
